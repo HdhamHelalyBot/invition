@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Cinzel:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-cinzel: "Cinzel", "Playfair Display", serif;
+  --font-cursive: "Great Vibes", cursive;
+  --font-arabic: "Cairo", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  
+  --color-gold-light: #f5eacf;
+  --color-gold-medium: #c5a85c;
+  --color-gold-dark: #a1813b;
+  --color-olive-light: #e6edd2;
+  --color-olive-medium: #4e5d48;
+  --color-olive-dark: #2a3525;
+  --color-ivory: #fdfcf7;
+  --color-champagne: #f4efe6;
+  --color-charcoal: #2c2d25;
+}
+
+/* Custom wedding styles */
+@layer utilities {
+  .writing-ltr {
+    direction: ltr;
+  }
+  .writing-rtl {
+    direction: rtl;
+  }
+}
+
+/* Scrollbar styling for customized guestbook */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold-light);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-medium);
+}
+
+/* Drifting element animations */
+@keyframes petal-fall {
+  0% {
+    transform: translateY(-5%) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(105%) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+.animate-petal {
+  position: fixed;
+  top: -10px;
+  pointer-events: none;
+  z-index: 50;
+  animation: petal-fall linear infinite;
+}
+
+.animate-float {
+  animation: float-gentle 6s ease-in-out infinite;
+}
+
+.pulse-ring-effect::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border: 1px solid var(--color-gold-medium);
+  border-radius: inherit;
+  animation: pulse-ring 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+/* Golden outline style mimicking traditional card debossing */
+.debossed-border {
+  border: 1px solid rgba(197, 168, 92, 0.25);
+  box-shadow: inset 0 0 15px rgba(197, 168, 92, 0.05);
+}
+

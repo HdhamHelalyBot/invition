@@ -1,0 +1,6 @@
+{
+  "name": "Ahmed & Yomna Wedding Invitation",
+  "description": "An elegant, interactive digital wedding invitation for Ahmed & Yomna, featuring a beautiful golden arch invite card, real-time countdown, custom RSVP form, congratulations guestbook wall, and soft ambient background harmony.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
