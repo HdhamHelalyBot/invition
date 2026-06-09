@@ -12,7 +12,7 @@ interface WeddingCardProps {
 
 export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
   const [copied, setCopied] = useState(false);
-  const addressDetails = "Tanta - Al Mahallah Al Kubra Rd, Saft Torab, El Mahalla El Kubra, Gharbia Governorate";
+  const addressDetails = "Tanta - Al Mahallah Al Kubra Rd, Villa Salz Burg, El Mahalla El Kubra, Gharbia Governorate";
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(addressDetails);
@@ -202,10 +202,10 @@ export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
                 </div>
               </div>
               
-              {/* At 9 PM */}
+              {/* At 8 PM */}
               <div className="flex-1 text-left pl-4">
                 <span className="text-[#4e5d48] text-xs md:text-sm tracking-[0.14em] font-extrabold uppercase whitespace-nowrap">
-                  At 9 PM
+                  At 8 PM
                 </span>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
           <div className="mt-6 mb-6 max-w-sm flex flex-col items-center">
             <MapPin className="h-5 w-5 text-gold-dark mb-2 animate-bounce" />
             <p className="text-[#4e5d48] font-sans text-xs md:text-[13px] leading-relaxed font-bold px-2">
-              Tanta - Al Mahallah Al Kubra Rd, Saft Torab, El Mahalla El Kubra, Gharbia Governorate
+              Tanta - Al Mahallah Al Kubra Rd, Villa Salz Burg, El Mahalla El Kubra, Gharbia Governorate
             </p>
           </div>
 

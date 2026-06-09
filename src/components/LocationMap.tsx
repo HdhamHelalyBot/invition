@@ -8,7 +8,7 @@ import { MapPin, Car, Navigation, Clipboard, Check, Map } from 'lucide-react';
 
 export default function LocationMap() {
   const [copied, setCopied] = useState(false);
-  const addressDetailsEn = "Tanta - Al Mahallah Al Kubra Rd, Saft Torab, El Mahalla El Kubra, Gharbia Governorate";
+  const addressDetailsEn = "Tanta - Al Mahallah Al Kubra Rd, Villa Salz Burg, El Mahalla El Kubra, Gharbia Governorate";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(addressDetailsEn);
@@ -43,7 +43,7 @@ export default function LocationMap() {
             </div>
 
             <h3 className="font-serif text-lg font-bold text-olive-medium leading-tight">
-              Saft Torab Hall Venue
+              Villa Salz Burg Venue
             </h3>
 
             <p className="text-xs text-charcoal/80 leading-relaxed font-semibold font-sans">
@@ -109,7 +109,7 @@ export default function LocationMap() {
             </div>
 
             <p className="font-serif text-xs font-extrabold text-[#7C663D] tracking-widest uppercase mb-1">
-              Saft Torab Event
+              Villa Salz Burg Event
             </p>
             <p className="font-serif text-[10px] italic text-charcoal/60 mb-3 max-w-[180px]">
               Tanta - El Mahalla Rd, El Gharbia

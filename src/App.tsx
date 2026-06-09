@@ -238,10 +238,10 @@ export default function App() {
               </p>
               <div className="w-10 h-[1px] bg-gold-medium/40 my-2"></div>
               <div className="flex justify-center w-full max-w-[280px] text-xs font-semibold text-[#5A5B53]">
-                <span className="font-sans text-center text-xs text-olive-medium font-bold">At 9:00 PM</span>
+                <span className="font-sans text-center text-xs text-olive-medium font-bold">At 8:00 PM</span>
               </div>
               <span className="text-[11px] text-gold-dark font-semibold mt-1.5 font-sans">
-                📍 Tanta - Al Mahallah Al Kubra Rd, Saft Torab
+                📍 Tanta - Al Mahallah Al Kubra Rd, Villa Salz Burg
               </span>
             </div>
 

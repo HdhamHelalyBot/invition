@@ -7,9 +7,9 @@ import { useState, useEffect } from 'react';
 import { Calendar, Heart } from 'lucide-react';
 
 export default function Countdown() {
-  // Target Wedding Date: Friday 16 October 2026 at 9:00 PM (Egypt time, UTC+3)
-  // 2026-10-16T21:00:00+03:00 is equivalently 2026-10-16T18:00:00Z in UTC.
-  const targetDate = new Date('2026-10-16T21:00:00+03:00');
+  // Target Wedding Date: Friday 16 October 2026 at 8:00 PM (Egypt time, UTC+3)
+  // 2026-10-16T20:00:00+03:00 is equivalently 2026-10-16T17:00:00Z in UTC.
+  const targetDate = new Date('2026-10-16T20:00:00+03:00');
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
