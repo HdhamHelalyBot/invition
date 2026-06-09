@@ -60,7 +60,7 @@ export default function LocationMap() {
               </button>
 
               <a
-                href="https://maps.app.goo.gl/9VSUXfr7o2pmkAJ18"
+                href="https://maps.app.goo.gl/DEfv2xbY3nhfGtCz5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3.5 py-2 rounded-xl bg-olive-medium text-white text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-olive-dark active:scale-95 flex items-center gap-1.5"
@@ -116,7 +116,7 @@ export default function LocationMap() {
             </p>
 
             <a
-              href="https://maps.app.goo.gl/9VSUXfr7o2pmkAJ18"
+              href="https://maps.app.goo.gl/DEfv2xbY3nhfGtCz5"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded-lg bg-charcoal text-white hover:bg-olive-medium text-[10px] font-serif tracking-widest uppercase transition-all flex items-center gap-1.5 shadow-sm hover:scale-105"

@@ -256,7 +256,7 @@ export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
         </button>
 
         <a
-          href="https://maps.app.goo.gl/9VSUXfr7o2pmkAJ18"
+          href="https://maps.app.goo.gl/DEfv2xbY3nhfGtCz5"
           target="_blank"
           rel="noopener noreferrer"
           id="direct-location-btn"
