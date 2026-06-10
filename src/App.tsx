@@ -21,11 +21,6 @@ export default function App() {
   const [rsvps, setRsvps] = useState<RSVPEntry[]>([]);
   const [wishes, setWishes] = useState<GuestbookWish[]>([]);
   const [petals, setPetals] = useState<{ id: number; left: number; delay: number; duration: number; size: number }[]>([]);
-  const [whatsappNumber, setWhatsappNumber] = useState<string>(() => {
-    return localStorage.getItem('wedding_whatsapp_number') || '+201021481525';
-  });
-  
-  // Admin Dashboard status
   const [isAdminOpened, setIsAdminOpened] = useState(false);
   const [adminPin, setAdminPin] = useState('');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -364,7 +359,7 @@ export default function App() {
 
             {/* Guest Congratulations Blessings board */}
             <section id="congratulations-list" className="my-14 border-t border-gold-medium/10 pt-10">
-              <Guestbook wishes={wishes} onAddWish={handleAddWish} whatsappNumber={whatsappNumber} isAdmin={isAdminLoggedIn} />
+              <Guestbook wishes={wishes} onAddWish={handleAddWish} isAdmin={isAdminLoggedIn} />
             </section>
 
           </main>
@@ -479,32 +474,6 @@ export default function App() {
                         >
                           Clear Lists
                         </button>
-                      </div>
-                    </div>
-
-                    {/* WhatsApp notification configuration */}
-                    <div className="bg-champagne/40 border border-gold-medium/20 p-5 rounded-2xl text-left mb-6 font-sans">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">💬</span>
-                        <h5 className="font-serif font-bold text-olive-medium text-sm tracking-wide uppercase">WhatsApp Notification Target</h5>
-                      </div>
-                      <p className="text-xs text-charcoal/70 mb-3 leading-relaxed">
-                        Specify the phone number (including country code, e.g. +201021481525) that will receive guest congratulation wishes directly via WhatsApp links on the guestbook submission wall.
-                      </p>
-                      <div className="flex gap-2 max-w-md">
-                        <input
-                          type="text"
-                          placeholder="+201021481525"
-                          value={whatsappNumber}
-                          onChange={(e) => {
-                            setWhatsappNumber(e.target.value);
-                            localStorage.setItem('wedding_whatsapp_number', e.target.value);
-                          }}
-                          className="flex-grow px-3 py-2 rounded-xl border border-gold-medium/30 focus:outline-none focus:ring-2 focus:ring-olive-medium text-xs font-semibold"
-                        />
-                        <span className="px-3.5 py-2 text-green-700 bg-green-50 font-bold border border-green-200 rounded-xl text-[10px] uppercase flex items-center justify-center tracking-wider shrink-0 shadow-xs">
-                          ✓ Auto Saved
-                        </span>
                       </div>
                     </div>
 
