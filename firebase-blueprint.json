@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "rsvps": {
+      "title": "RSVPEntry",
+      "description": "A guest RSVP submission for the wedding.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique document ID" },
+        "name": { "type": "string", "description": "Name of the guest" },
+        "status": { "type": "string", "enum": ["attending", "declined"], "description": "RSVP attendance status" },
+        "guestsCount": { "type": "number", "description": "Number of accompanying guests" },
+        "dietaryNotes": { "type": "string", "description": "Congratulatory message or dietary notes" },
+        "timestamp": { "type": "string", "description": "ISO string timestamp" }
+      },
+      "required": ["id", "name", "status", "guestsCount", "timestamp"]
+    },
+    "wishes": {
+      "title": "GuestbookWish",
+      "description": "A congratulatory wish written by a wedding guest.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique document ID" },
+        "name": { "type": "string", "description": "Name of the guest writing the wish" },
+        "wishText": { "type": "string", "description": "The message body" },
+        "relationship": { "type": "string", "enum": ["family", "friend", "colleague", "wellwisher"], "description": "Relationship to bride/groom" },
+        "timestamp": { "type": "string", "description": "ISO string timestamp" }
+      },
+      "required": ["id", "name", "wishText", "relationship", "timestamp"]
+    }
+  },
+  "firestore": {
+    "rsvps/{rsvpId}": {
+      "schema": "rsvps",
+      "description": "Collection of RSVP submissions"
+    },
+    "wishes/{wishId}": {
+      "schema": "wishes",
+      "description": "Collection of congratulatory wishes"
+    }
+  }
+}

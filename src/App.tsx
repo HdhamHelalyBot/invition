@@ -12,6 +12,10 @@ import LocationMap from './components/LocationMap';
 import BackgroundMusic from './components/BackgroundMusic';
 import { Sparkles, Heart, Mail, CheckCircle2, FileSpreadsheet, Lock, AlertCircle, X, Check } from 'lucide-react';
 
+// Import Firebase and Custom Error Handler
+import { collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from './firebase';
+
 export default function App() {
   const [isOpened, setIsOpened] = useState(false);
   const [rsvps, setRsvps] = useState<RSVPEntry[]>([]);
@@ -28,41 +32,35 @@ export default function App() {
   const [adminError, setAdminError] = useState('');
   const [adminActiveTab, setAdminActiveTab] = useState<'rsvps' | 'wishes'>('rsvps');
 
-  // Initial database of wishes is empty by default so only user-submitted wishes appear
-  const initialWishes: GuestbookWish[] = [];
-
-  // Load from local storage on mount
+  // Load from Firebase Firestore on mount in real-time
   useEffect(() => {
-    const storedRsvps = localStorage.getItem('ahmed_yomna_rsvps');
-    if (storedRsvps) {
-      setRsvps(JSON.parse(storedRsvps));
-    } else {
-      // Seed initial RSVPs for elegant dashboards
-      const seedRsvps: RSVPEntry[] = [
-        { id: 'rsvp-1', name: 'Adham Helaly', status: 'attending', guestsCount: 2, timestamp: new Date().toISOString() },
-        { id: 'rsvp-2', name: 'Mahmoud Hegazi', status: 'attending', guestsCount: 1, timestamp: new Date().toISOString() },
-        { id: 'rsvp-3', name: 'Yasmine Sabry', status: 'declined', guestsCount: 0, timestamp: new Date().toISOString() },
-      ];
-      setRsvps(seedRsvps);
-      localStorage.setItem('ahmed_yomna_rsvps', JSON.stringify(seedRsvps));
-    }
+    // 1. Listen to RSVPs
+    const rsvpsQuery = query(collection(db, 'rsvps'), orderBy('timestamp', 'desc'));
+    const unsubscribeRsvps = onSnapshot(rsvpsQuery, (snapshot) => {
+      const result: RSVPEntry[] = [];
+      snapshot.forEach((docSnap) => {
+        result.push(docSnap.data() as RSVPEntry);
+      });
+      setRsvps(result);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'rsvps');
+    });
 
-    const storedWishes = localStorage.getItem('ahmed_yomna_wishes_v3');
-    if (storedWishes) {
-      const parsedWishes: GuestbookWish[] = JSON.parse(storedWishes);
-      // Filter out any cached placeholder/seed wishes dynamically
-      const userWishes = parsedWishes.filter(w => w && w.id && !w.id.startsWith('seed-'));
-      setWishes(userWishes);
-      // Update localStorage to match the clean user-only wishes
-      if (parsedWishes.length !== userWishes.length) {
-        localStorage.setItem('ahmed_yomna_wishes_v3', JSON.stringify(userWishes));
-      }
-    } else {
-      setWishes(initialWishes);
-      localStorage.setItem('ahmed_yomna_wishes_v3', JSON.stringify(initialWishes));
-    }
+    // 2. Listen to Wishes
+    const wishesQuery = query(collection(db, 'wishes'), orderBy('timestamp', 'desc'));
+    const unsubscribeWishes = onSnapshot(wishesQuery, (snapshot) => {
+      const result: GuestbookWish[] = [];
+      snapshot.forEach((docSnap) => {
+        result.push(docSnap.data() as GuestbookWish);
+      });
+      // Filter out any cached placeholder/seed wishes dynamically if needed
+      const filtered = result.filter(w => w && w.id && !w.id.startsWith('seed-'));
+      setWishes(filtered);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'wishes');
+    });
 
-    // Generate drift rose petals random indexes
+    // 3. Generate drift rose petals random indexes
     const generatedPetals = Array.from({ length: 18 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100, // random start horizontal
@@ -71,55 +69,67 @@ export default function App() {
       size: 8 + Math.random() * 15, // size
     }));
     setPetals(generatedPetals);
+
+    return () => {
+      unsubscribeRsvps();
+      unsubscribeWishes();
+    };
   }, []);
 
-  // Save updates helper
-  const saveRsvps = (newRsvps: RSVPEntry[]) => {
-    setRsvps(newRsvps);
-    localStorage.setItem('ahmed_yomna_rsvps', JSON.stringify(newRsvps));
-  };
-
-  const saveWishes = (newWishes: GuestbookWish[]) => {
-    setWishes(newWishes);
-    localStorage.setItem('ahmed_yomna_wishes_v3', JSON.stringify(newWishes));
-  };
-
   // Submit RSVP Handler
-  const handleRSVPSubmit = (entry: Omit<RSVPEntry, 'id' | 'timestamp'>) => {
+  const handleRSVPSubmit = async (entry: Omit<RSVPEntry, 'id' | 'timestamp'>) => {
+    const id = 'rsvp-' + Date.now();
+    const timestamp = new Date().toISOString();
     const newEntry: RSVPEntry = {
       ...entry,
-      id: 'rsvp-' + Date.now(),
-      timestamp: new Date().toISOString(),
+      id,
+      timestamp,
     };
-    const updated = [newEntry, ...rsvps];
-    saveRsvps(updated);
+
+    try {
+      await setDoc(doc(db, 'rsvps', id), newEntry);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, `rsvps/${id}`);
+    }
 
     // If they provided a nice congratulatory wish, append it automatically in blessings guestbook!
     if (entry.dietaryNotes && entry.dietaryNotes.trim().length > 4) {
-      const relationshipMap: 'family' | 'friend' | 'wellwisher' = 
+      const relationshipMap: 'family' | 'friend' | 'colleague' | 'wellwisher' = 
         entry.name.toLowerCase().includes('helaly') || entry.name.includes('عائلة') 
           ? 'family' 
           : 'friend';
 
+      const wishId = 'wish-auto-' + Date.now();
       const autoWish: GuestbookWish = {
-        id: 'wish-auto-' + Date.now(),
+        id: wishId,
         name: entry.name,
         wishText: entry.dietaryNotes,
         relationship: relationshipMap,
-        timestamp: new Date().toISOString(),
+        timestamp,
       };
-      saveWishes([autoWish, ...wishes]);
+
+      try {
+        await setDoc(doc(db, 'wishes', wishId), autoWish);
+      } catch (err) {
+        handleFirestoreError(err, OperationType.WRITE, `wishes/${wishId}`);
+      }
     }
   };
 
   // Direct Wish Submission Handler
-  const handleAddWish = (wish: Omit<GuestbookWish, 'id' | 'timestamp'>) => {
+  const handleAddWish = async (wish: Omit<GuestbookWish, 'id' | 'timestamp'>) => {
+    const id = 'wish-' + Date.now();
     const newWish: GuestbookWish = {
       ...wish,
-      id: 'wish-' + Date.now(),
+      id,
       timestamp: new Date().toISOString(),
     };
-    saveWishes([newWish, ...wishes]);
+
+    try {
+      await setDoc(doc(db, 'wishes', id), newWish);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.WRITE, `wishes/${id}`);
+    }
   };
 
   // Admin Dashboard logins
@@ -130,6 +140,25 @@ export default function App() {
       setAdminError('');
     } else {
       setAdminError('Invalid Pin! Try 2026.');
+    }
+  };
+
+  // Clear lists helper from Cloud Firestore database
+  const handleClearLists = async () => {
+    if (!window.confirm("Do you want to clear ALL RSVPs and Wishes from the database? This action cannot be undone.")) return;
+    
+    try {
+      const deletePromises: Promise<void>[] = [];
+      rsvps.forEach((r) => {
+        deletePromises.push(deleteDoc(doc(db, 'rsvps', r.id)));
+      });
+      wishes.forEach((w) => {
+        deletePromises.push(deleteDoc(doc(db, 'wishes', w.id)));
+      });
+      await Promise.all(deletePromises);
+      alert("Database lists have been cleared successfully!");
+    } catch (err) {
+      handleFirestoreError(err, OperationType.DELETE, 'rsvps / wishes');
     }
   };
 
@@ -423,13 +452,8 @@ export default function App() {
                         
                         {/* Mini clear option */}
                         <button
-                          onClick={() => {
-                            if (window.confirm("Do you want to clear RSVPs? This action wipes all local RSVPs.")) {
-                              saveRsvps([]);
-                              saveWishes([]);
-                            }
-                          }}
-                          className="px-4 py-2 rounded-xl bg-red-950/20 text-red-850 hover:bg-red-950/30 text-xs font-semibold uppercase tracking-wider"
+                          onClick={handleClearLists}
+                          className="px-4 py-2 rounded-xl bg-red-950/20 text-red-850 hover:bg-red-950/30 text-xs font-semibold uppercase tracking-wider cursor-pointer"
                         >
                           Clear Lists
                         </button>
