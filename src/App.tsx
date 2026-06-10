@@ -26,6 +26,7 @@ export default function App() {
   const [adminPin, setAdminPin] = useState('');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [adminError, setAdminError] = useState('');
+  const [adminActiveTab, setAdminActiveTab] = useState<'rsvps' | 'wishes'>('rsvps');
 
   // Initial database of wishes is empty by default so only user-submitted wishes appear
   const initialWishes: GuestbookWish[] = [];
@@ -312,7 +313,7 @@ export default function App() {
 
             {/* Guest Congratulations Blessings board */}
             <section id="congratulations-list" className="my-14 border-t border-gold-medium/10 pt-10">
-              <Guestbook wishes={wishes} onAddWish={handleAddWish} whatsappNumber={whatsappNumber} />
+              <Guestbook wishes={wishes} onAddWish={handleAddWish} whatsappNumber={whatsappNumber} isAdmin={isAdminLoggedIn} />
             </section>
 
           </main>
@@ -463,61 +464,135 @@ export default function App() {
 
                     {/* Quick Stats Grid */}
                     <div className="grid grid-cols-3 gap-4 mb-6 text-left">
-                      <div className="bg-champagne/40 border border-gold-medium/10 p-4 rounded-2xl">
+                      <div className="bg-champagne/40 border border-gold-medium/10 p-4 rounded-2xl font-sans">
                         <span className="text-[10px] font-mono tracking-wider uppercase text-[#AB8C4A] font-bold">Total Confirmed</span>
-                        <p className="text-3xl font-serif font-black text-olive-medium transition-all">
+                        <p className="text-2xl font-serif font-black text-olive-medium transition-all">
                           {rsvps.filter(r => r.status === 'attending').reduce((acc, curr) => acc + curr.guestsCount, 0)} guests
                         </p>
                       </div>
-                      <div className="bg-champagne/40 border border-gold-medium/10 p-4 rounded-2xl">
-                        <span className="text-[10px] font-mono tracking-wider uppercase text-[#AB8C4A] font-bold">RSVP YES Responses</span>
-                        <p className="text-3xl font-serif font-black text-olive-medium">
-                          {rsvps.filter(r => r.status === 'attending').length} rows
+                      <div className="bg-champagne/40 border border-gold-medium/10 p-4 rounded-2xl font-sans">
+                        <span className="text-[10px] font-mono tracking-wider uppercase text-[#AB8C4A] font-bold">RSVP responses</span>
+                        <p className="text-2xl font-serif font-black text-olive-medium">
+                          {rsvps.length} rows
                         </p>
                       </div>
-                      <div className="bg-champagne/40 border border-gold-medium/10 p-4 rounded-2xl">
-                        <span className="text-[10px] font-mono tracking-wider uppercase text-[#AB8C4A] font-bold">RSVP NO Responses</span>
-                        <p className="text-3xl font-serif font-black text-gray-500">
-                          {rsvps.filter(r => r.status === 'declined').length} rows
+                      <div className="bg-champagne/40 border border-gold-medium/10 p-4 rounded-2xl font-sans">
+                        <span className="text-[10px] font-mono tracking-wider uppercase text-[#AB8C4A] font-bold">Wishes Received</span>
+                        <p className="text-2xl font-serif font-black text-olive-medium">
+                          {wishes.length} wishes
                         </p>
                       </div>
                     </div>
 
-                    {/* Table View */}
-                    <div className="border border-gold-medium/20 rounded-2xl overflow-hidden flex-grow bg-white">
-                      <div className="overflow-x-auto max-h-[300px]">
-                        <table className="w-full text-left font-sans text-xs border-collapse">
-                          <thead>
-                            <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
-                              <th className="py-3 px-4 font-extrabold">Name</th>
-                              <th className="py-3 px-4 font-extrabold">Attendance</th>
-                              <th className="py-3 px-4 font-extrabold">Guests Count</th>
-                              <th className="py-3 px-4 font-extrabold">Wishes / Notes</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {rsvps.map((guest) => (
-                              <tr key={guest.id} className="border-b border-champagne hover:bg-champagne/10">
-                                <td className="py-3.5 px-4 font-bold text-olive-medium">{guest.name}</td>
-                                <td className="py-3.5 px-4">
-                                  {guest.status === 'attending' ? (
-                                    <span className="inline-flex items-center gap-1 text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full">
-                                      <Check className="h-3 w-3" /> Attending
-                                    </span>
-                                  ) : (
-                                    <span className="text-gray-400 font-semibold">Declined 💔</span>
-                                  )}
-                                </td>
-                                <td className="py-3.5 px-4 font-mono font-bold">{guest.guestsCount}</td>
-                                <td className="py-3.5 px-4 italic text-neutral-600 truncate max-w-[200px]" title={guest.dietaryNotes}>
-                                  {guest.dietaryNotes || '-'}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                    {/* Admin Active Tab Switcher */}
+                    <div className="flex border-b border-champagne mb-5 gap-6">
+                      <button
+                        onClick={() => setAdminActiveTab('rsvps')}
+                        className={`pb-2.5 font-serif text-xs font-bold uppercase tracking-wider transition-all relative cursor-pointer ${
+                          adminActiveTab === 'rsvps'
+                            ? 'text-olive-medium font-extrabold'
+                            : 'text-charcoal/50 hover:text-olive-medium'
+                        }`}
+                      >
+                        Guest RSVPs ({rsvps.length})
+                        {adminActiveTab === 'rsvps' && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-olive-medium animate-[scale-up_0.2s_ease]"></div>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => setAdminActiveTab('wishes')}
+                        className={`pb-2.5 font-serif text-xs font-bold uppercase tracking-wider transition-all relative cursor-pointer ${
+                          adminActiveTab === 'wishes'
+                            ? 'text-olive-medium font-extrabold'
+                            : 'text-charcoal/50 hover:text-olive-medium'
+                        }`}
+                      >
+                        Wishes Wall ({wishes.length})
+                        {adminActiveTab === 'wishes' && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-olive-medium animate-[scale-up_0.2s_ease]"></div>
+                        )}
+                      </button>
                     </div>
+
+                    {adminActiveTab === 'rsvps' ? (
+                      /* Table View: Guest RSVPs */
+                      <div className="border border-gold-medium/20 rounded-2xl overflow-hidden flex-grow bg-white">
+                        <div className="overflow-x-auto max-h-[300px]">
+                          <table className="w-full text-left font-sans text-xs border-collapse">
+                            <thead>
+                              <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
+                                <th className="py-3 px-4 font-extrabold">Name</th>
+                                <th className="py-3 px-4 font-extrabold">Attendance</th>
+                                <th className="py-3 px-4 font-extrabold">Guests Count</th>
+                                <th className="py-3 px-4 font-extrabold">Wishes / Notes</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {rsvps.map((guest) => (
+                                <tr key={guest.id} className="border-b border-champagne hover:bg-champagne/10">
+                                  <td className="py-3.5 px-4 font-bold text-olive-medium">{guest.name}</td>
+                                  <td className="py-3.5 px-4">
+                                    {guest.status === 'attending' ? (
+                                      <span className="inline-flex items-center gap-1 text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full">
+                                        <Check className="h-3 w-3" /> Attending
+                                      </span>
+                                    ) : (
+                                      <span className="text-gray-400 font-semibold">Declined 💔</span>
+                                    )}
+                                  </td>
+                                  <td className="py-3.5 px-4 font-mono font-bold">{guest.guestsCount}</td>
+                                  <td className="py-3.5 px-4 italic text-neutral-600 truncate max-w-[200px]" title={guest.dietaryNotes}>
+                                    {guest.dietaryNotes || '-'}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Table View: Private Wishes Messages */
+                      <div className="border border-gold-medium/20 rounded-2xl overflow-hidden flex-grow bg-white text-left">
+                        <div className="overflow-x-auto max-h-[300px]">
+                          <table className="w-full text-xs font-sans border-collapse">
+                            <thead>
+                              <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
+                                <th className="py-3 px-4 font-extrabold w-1/4">Name / الاسم</th>
+                                <th className="py-3 px-4 font-extrabold w-2/4">Wish / التهنئة</th>
+                                <th className="py-3 px-4 font-extrabold w-1/4">Timestamp / التاريخ</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {wishes.length === 0 ? (
+                                <tr>
+                                  <td colSpan={3} className="text-center py-10 text-charcoal/50 italic font-medium">
+                                    No wishes submitted yet. Be the first to try! 🌸
+                                  </td>
+                                </tr>
+                              ) : (
+                                wishes.map((item) => (
+                                  <tr key={item.id} className="border-b border-champagne hover:bg-champagne/10">
+                                    <td className="py-3.5 px-4 font-bold text-olive-medium">{item.name}</td>
+                                    <td className="py-3.5 px-4 italic text-neutral-800 font-medium whitespace-pre-wrap leading-relaxed">
+                                      " {item.wishText} "
+                                    </td>
+                                    <td className="py-3.5 px-4 text-[10px] text-neutral-500 font-mono">
+                                      {new Date(item.timestamp).toLocaleDateString(undefined, {
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                      })}
+                                    </td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
