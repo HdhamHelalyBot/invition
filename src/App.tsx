@@ -10,7 +10,7 @@ import Countdown from './components/Countdown';
 import Guestbook from './components/Guestbook';
 import LocationMap from './components/LocationMap';
 import BackgroundMusic from './components/BackgroundMusic';
-import { Sparkles, Heart, Mail, CheckCircle2, FileSpreadsheet, Lock, AlertCircle, X, Check } from 'lucide-react';
+import { Sparkles, Heart, Mail, CheckCircle2, FileSpreadsheet, Lock, AlertCircle, X, Check, Search, Grid, List } from 'lucide-react';
 
 // Import Firebase and Custom Error Handler
 import { collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
@@ -31,6 +31,8 @@ export default function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [adminError, setAdminError] = useState('');
   const [adminActiveTab, setAdminActiveTab] = useState<'rsvps' | 'wishes'>('rsvps');
+  const [adminSearch, setAdminSearch] = useState('');
+  const [adminViewType, setAdminViewType] = useState<'cards' | 'table'>('cards');
 
   // Load from Firebase Firestore on mount in real-time
   useEffect(() => {
@@ -539,83 +541,234 @@ export default function App() {
                       </button>
                     </div>
 
+                    {/* Search and Layout Tools with Dynamic RTL Translation support */}
+                    <div className="flex flex-col sm:flex-row gap-3 justify-between items-center mb-6 bg-champagne/20 p-4 rounded-2xl border border-gold-medium/10">
+                      {/* Search Input */}
+                      <div className="relative w-full sm:w-72">
+                        <span className="absolute inset-y-0 left-3 flex items-center text-charcoal/40 pointer-events-none">
+                          <Search className="h-4 w-4" />
+                        </span>
+                        <input
+                          type="text"
+                          value={adminSearch}
+                          onChange={(e) => setAdminSearch(e.target.value)}
+                          placeholder={adminActiveTab === 'rsvps' ? "ابحث عن المدعوين... / Search guests..." : "ابحث عن التهاني... / Search wishes..."}
+                          className="w-full pl-9 pr-4 py-2.5 text-xs font-sans rounded-xl bg-white border border-gold-medium/20 focus:ring-1 focus:ring-olive-medium focus:outline-none placeholder-charcoal/40 font-semibold"
+                        />
+                      </div>
+
+                      {/* Layout Type Switcher */}
+                      <div className="flex gap-1 bg-champagne/30 p-1 rounded-xl border border-gold-medium/10 shrink-0 w-full sm:w-auto">
+                        <button
+                          onClick={() => setAdminViewType('cards')}
+                          className={`flex-grow sm:flex-grow-0 px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                            adminViewType === 'cards'
+                              ? 'bg-olive-medium text-white shadow-xs'
+                              : 'text-charcoal/60 hover:text-olive-medium font-semibold'
+                          }`}
+                        >
+                          <Grid className="h-3.5 w-3.5" />
+                          Cards / بطاقات
+                        </button>
+                        <button
+                          onClick={() => setAdminViewType('table')}
+                          className={`flex-grow sm:flex-grow-0 px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                            adminViewType === 'table'
+                              ? 'bg-olive-medium text-white shadow-xs'
+                              : 'text-charcoal/60 hover:text-olive-medium font-semibold'
+                          }`}
+                        >
+                          <List className="h-3.5 w-3.5" />
+                          Table / جدول
+                        </button>
+                      </div>
+                    </div>
+
                     {adminActiveTab === 'rsvps' ? (
-                      /* Table View: Guest RSVPs */
-                      <div className="border border-gold-medium/20 rounded-2xl overflow-hidden flex-grow bg-white">
-                        <div className="overflow-x-auto max-h-[300px]">
-                          <table className="w-full text-left font-sans text-xs border-collapse">
-                            <thead>
-                              <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
-                                <th className="py-3 px-4 font-extrabold">Name</th>
-                                <th className="py-3 px-4 font-extrabold">Attendance</th>
-                                <th className="py-3 px-4 font-extrabold">Guests Count</th>
-                                <th className="py-3 px-4 font-extrabold">Wishes / Notes</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {rsvps.map((guest) => (
-                                <tr key={guest.id} className="border-b border-champagne hover:bg-champagne/10">
-                                  <td className="py-3.5 px-4 font-bold text-olive-medium">{guest.name}</td>
-                                  <td className="py-3.5 px-4">
-                                    {guest.status === 'attending' ? (
-                                      <span className="inline-flex items-center gap-1 text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full">
-                                        <Check className="h-3 w-3" /> Attending
-                                      </span>
-                                    ) : (
-                                      <span className="text-gray-400 font-semibold">Declined 💔</span>
-                                    )}
-                                  </td>
-                                  <td className="py-3.5 px-4 font-mono font-bold">{guest.guestsCount}</td>
-                                  <td className="py-3.5 px-4 italic text-neutral-600 truncate max-w-[200px]" title={guest.dietaryNotes}>
-                                    {guest.dietaryNotes || '-'}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    ) : (
-                      /* Table View: Private Wishes Messages */
-                      <div className="border border-gold-medium/20 rounded-2xl overflow-hidden flex-grow bg-white text-left">
-                        <div className="overflow-x-auto max-h-[300px]">
-                          <table className="w-full text-xs font-sans border-collapse">
-                            <thead>
-                              <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
-                                <th className="py-3 px-4 font-extrabold w-1/4">Name / الاسم</th>
-                                <th className="py-3 px-4 font-extrabold w-2/4">Wish / التهنئة</th>
-                                <th className="py-3 px-4 font-extrabold w-1/4">Timestamp / التاريخ</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {wishes.length === 0 ? (
-                                <tr>
-                                  <td colSpan={3} className="text-center py-10 text-charcoal/50 italic font-medium">
-                                    No wishes submitted yet. Be the first to try! 🌸
-                                  </td>
-                                </tr>
-                              ) : (
-                                wishes.map((item) => (
-                                  <tr key={item.id} className="border-b border-champagne hover:bg-champagne/10">
-                                    <td className="py-3.5 px-4 font-bold text-olive-medium">{item.name}</td>
-                                    <td className="py-3.5 px-4 italic text-neutral-800 font-medium whitespace-pre-wrap leading-relaxed">
-                                      " {item.wishText} "
-                                    </td>
-                                    <td className="py-3.5 px-4 text-[10px] text-neutral-500 font-mono">
-                                      {new Date(item.timestamp).toLocaleDateString(undefined, {
-                                        month: 'short',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                      })}
-                                    </td>
+                      /* RSVP Content Sections */
+                      (() => {
+                        const filteredRsvps = rsvps.filter(r => 
+                          r.name.toLowerCase().includes(adminSearch.toLowerCase()) || 
+                          (r.dietaryNotes && r.dietaryNotes.toLowerCase().includes(adminSearch.toLowerCase()))
+                        );
+
+                        if (filteredRsvps.length === 0) {
+                          return (
+                            <div className="py-12 text-center bg-white border border-dashed border-gold-medium/20 rounded-2xl font-sans text-xs text-charcoal/50 font-medium">
+                              No matching guests found. 🕊️
+                            </div>
+                          );
+                        }
+
+                        if (adminViewType === 'cards') {
+                          /* Cards Display for RSVPs */
+                          return (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                              {filteredRsvps.map((guest) => {
+                                const hasArabic = /[\u0600-\u06FF]/.test(guest.name + (guest.dietaryNotes || ''));
+                                return (
+                                  <div key={guest.id} className="bg-white border border-gold-medium/20 rounded-2xl p-5 shadow-xs flex flex-col justify-between font-sans relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 h-1.5 w-1.5 rounded-full bg-gold-medium m-3"></div>
+                                    <div>
+                                      <div className={`flex justify-between items-start gap-2 mb-2 ${hasArabic ? 'flex-row-reverse' : ''}`}>
+                                        <h5 className={`font-serif font-black text-sm text-olive-medium ${hasArabic ? 'text-right' : ''}`}>
+                                          {guest.name}
+                                        </h5>
+                                        <span className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                          guest.status === 'attending' 
+                                            ? 'bg-green-50 text-green-700 border border-green-200' 
+                                            : 'bg-neutral-50 text-neutral-400 border border-neutral-200'
+                                        }`}>
+                                          {guest.status === 'attending' ? 'Attending ✓' : 'Declined 💔'}
+                                        </span>
+                                      </div>
+                                      <div className={`text-[10px] mt-1 text-charcoal/60 font-bold mb-3 ${hasArabic ? 'text-right' : ''}`}>
+                                        Guests: <span className="font-mono text-xs text-olive-medium font-bold">{guest.guestsCount}</span> | {new Date(guest.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                      </div>
+                                      {guest.dietaryNotes ? (
+                                        <div className={`p-3 bg-[#FAF9F6] border border-gold-medium/10 rounded-xl text-neutral-800 text-xs italic font-medium leading-relaxed ${hasArabic ? 'text-right rtl' : 'text-left ltr'}`}>
+                                          " {guest.dietaryNotes} "
+                                        </div>
+                                      ) : (
+                                        <div className="text-[10px] text-charcoal/30 italic">No message submitted</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        }
+
+                        /* Traditional Table Display for RSVPs */
+                        return (
+                          <div className="border border-gold-medium/20 rounded-2xl overflow-hidden bg-white">
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left font-sans text-xs border-collapse">
+                                <thead>
+                                  <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
+                                    <th className="py-3.5 px-4 font-extrabold">Name</th>
+                                    <th className="py-3.5 px-4 font-extrabold">Attendance</th>
+                                    <th className="py-3.5 px-4 font-extrabold">Guests Count</th>
+                                    <th className="py-3.5 px-4 font-extrabold">Wishes / Notes</th>
                                   </tr>
-                                ))
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
+                                </thead>
+                                <tbody>
+                                  {filteredRsvps.map((guest) => {
+                                    const hasArabic = /[\u0600-\u06FF]/.test(guest.dietaryNotes || '');
+                                    return (
+                                      <tr key={guest.id} className="border-b border-champagne hover:bg-champagne/10">
+                                        <td className="py-3.5 px-4 font-bold text-olive-medium">{guest.name}</td>
+                                        <td className="py-3.5 px-4">
+                                          {guest.status === 'attending' ? (
+                                            <span className="inline-flex items-center gap-1 text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full">
+                                              <Check className="h-3 w-3" /> Attending
+                                            </span>
+                                          ) : (
+                                            <span className="text-gray-400 font-semibold">Declined 💔</span>
+                                          )}
+                                        </td>
+                                        <td className="py-3.5 px-4 font-mono font-bold">{guest.guestsCount}</td>
+                                        <td className={`py-3.5 px-4 italic text-neutral-600 truncate max-w-[200px] ${hasArabic ? 'text-right rtl' : ''}`} title={guest.dietaryNotes}>
+                                          {guest.dietaryNotes || '-'}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        );
+                      })()
+                    ) : (
+                      /* Wishes Panel Sections */
+                      (() => {
+                        const filteredWishes = wishes.filter(w => 
+                          w.name.toLowerCase().includes(adminSearch.toLowerCase()) || 
+                          w.wishText.toLowerCase().includes(adminSearch.toLowerCase())
+                        );
+
+                        if (filteredWishes.length === 0) {
+                          return (
+                            <div className="py-12 text-center bg-white border border-dashed border-gold-medium/20 rounded-2xl font-sans text-xs text-charcoal/50 font-medium">
+                              No matching wishes found. Be the first to write! 🌸
+                            </div>
+                          );
+                        }
+
+                        if (adminViewType === 'cards') {
+                          /* Cards Display for Wishes */
+                          return (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                              {filteredWishes.map((item) => {
+                                const hasArabic = /[\u0600-\u06FF]/.test(item.name + item.wishText);
+                                return (
+                                  <div key={item.id} className="bg-white border border-gold-medium/20 rounded-2xl p-5 shadow-xs flex flex-col justify-between font-sans relative overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-sm">
+                                    <div className="absolute right-3 top-3 text-olive-medium/5 pointer-events-none">
+                                      <Heart className="h-8 w-8 fill-current" />
+                                    </div>
+                                    <div>
+                                      <div className={`flex justify-between items-center pb-2.5 border-b border-champagne/60 ${hasArabic ? 'flex-row-reverse' : ''}`}>
+                                        <span className="font-serif font-black text-xs text-olive-medium/90 truncate max-w-[150px]">
+                                          {item.name}
+                                        </span>
+                                        <span className="text-[10px] text-gold-dark font-mono uppercase bg-champagne/20 px-2 py-0.5 rounded-md font-bold">
+                                          {item.relationship}
+                                        </span>
+                                      </div>
+                                      <div className={`py-4 text-xs italic font-medium text-neutral-800 whitespace-pre-wrap leading-relaxed ${hasArabic ? 'text-right rtl' : 'text-left ltr'}`}>
+                                        " {item.wishText} "
+                                      </div>
+                                    </div>
+                                    <div className={`text-[9px] text-neutral-400 font-mono pt-2 border-t border-dashed border-champagne/40 ${hasArabic ? 'text-right' : ''}`}>
+                                      {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        }
+
+                        /* Traditional Table Display for Wishes */
+                        return (
+                          <div className="border border-gold-medium/20 rounded-2xl overflow-hidden bg-white text-left">
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-xs font-sans border-collapse">
+                                <thead>
+                                  <tr className="bg-champagne/30 text-gold-dark font-serif tracking-widest uppercase text-[9px] border-b border-gold-medium/20">
+                                    <th className="py-3.5 px-4 font-extrabold w-1/4">Name / الاسم</th>
+                                    <th className="py-3.5 px-4 font-extrabold w-2/4">Wish / التهنئة</th>
+                                    <th className="py-3.5 px-4 font-extrabold w-1/4">Timestamp / التاريخ</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {filteredWishes.map((item) => {
+                                    const hasArabic = /[\u0600-\u06FF]/.test(item.wishText);
+                                    return (
+                                      <tr key={item.id} className="border-b border-champagne hover:bg-champagne/10">
+                                        <td className="py-3.5 px-4 font-bold text-olive-medium">{item.name}</td>
+                                        <td className={`py-3.5 px-4 italic text-neutral-800 font-medium whitespace-pre-wrap leading-relaxed ${hasArabic ? 'text-right rtl' : 'text-left ltr'}`}>
+                                          " {item.wishText} "
+                                        </td>
+                                        <td className="py-3.5 px-4 text-[10px] text-neutral-500 font-mono">
+                                          {new Date(item.timestamp).toLocaleDateString(undefined, {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                          })}
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        );
+                      })()
                     )}
                   </div>
                 )}
