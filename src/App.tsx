@@ -10,7 +10,7 @@ import Countdown from './components/Countdown';
 import Guestbook from './components/Guestbook';
 import LocationMap from './components/LocationMap';
 import BackgroundMusic from './components/BackgroundMusic';
-import { Sparkles, Heart, Mail, CheckCircle2, FileSpreadsheet, Lock, AlertCircle, X, Check, Search, Grid, List } from 'lucide-react';
+import { Sparkles, Heart, Mail, CheckCircle2, FileSpreadsheet, Lock, AlertCircle, X, Check, Search, Grid, List, Trash2 } from 'lucide-react';
 
 // Import Firebase and Custom Error Handler
 import { collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
@@ -161,6 +161,26 @@ export default function App() {
       alert("Database lists have been cleared successfully!");
     } catch (err) {
       handleFirestoreError(err, OperationType.DELETE, 'rsvps / wishes');
+    }
+  };
+
+  // Delete individual RSVP entry
+  const handleDeleteRSVP = async (id: string, name: string) => {
+    if (!window.confirm(`هل تريد بالتأكيد حذف دعوة "${name}"؟\nAre you sure you want to delete RSVP for "${name}"?`)) return;
+    try {
+      await deleteDoc(doc(db, 'rsvps', id));
+    } catch (err) {
+      handleFirestoreError(err, OperationType.DELETE, `rsvps/${id}`);
+    }
+  };
+
+  // Delete individual Wish entry
+  const handleDeleteWish = async (id: string, name: string) => {
+    if (!window.confirm(`هل تريد بالتأكيد حذف تهنئة "${name}"؟\nAre you sure you want to delete the wish from "${name}"?`)) return;
+    try {
+      await deleteDoc(doc(db, 'wishes', id));
+    } catch (err) {
+      handleFirestoreError(err, OperationType.DELETE, `wishes/${id}`);
     }
   };
 
@@ -633,6 +653,15 @@ export default function App() {
                                         <div className="text-[10px] text-charcoal/30 italic">No message submitted</div>
                                       )}
                                     </div>
+                                    {/* Action row with delete */}
+                                    <div className="mt-4 pt-3 border-t border-dashed border-champagne/40 flex justify-end">
+                                      <button
+                                        onClick={() => handleDeleteRSVP(guest.id, guest.name)}
+                                        className="inline-flex items-center gap-1 text-red-700 hover:text-red-900 text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-colors p-1 px-2 rounded-lg bg-red-50 hover:bg-red-100"
+                                      >
+                                        <Trash2 className="h-3 w-3" /> Delete / حذف
+                                      </button>
+                                    </div>
                                   </div>
                                 );
                               })}
@@ -651,6 +680,7 @@ export default function App() {
                                     <th className="py-3.5 px-4 font-extrabold">Attendance</th>
                                     <th className="py-3.5 px-4 font-extrabold">Guests Count</th>
                                     <th className="py-3.5 px-4 font-extrabold">Wishes / Notes</th>
+                                    <th className="py-3.5 px-4 font-extrabold text-right">Actions / إجراءات</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -671,6 +701,15 @@ export default function App() {
                                         <td className="py-3.5 px-4 font-mono font-bold">{guest.guestsCount}</td>
                                         <td className={`py-3.5 px-4 italic text-neutral-600 truncate max-w-[200px] ${hasArabic ? 'text-right rtl' : ''}`} title={guest.dietaryNotes}>
                                           {guest.dietaryNotes || '-'}
+                                        </td>
+                                        <td className="py-3.5 px-4 text-right">
+                                          <button
+                                            onClick={() => handleDeleteRSVP(guest.id, guest.name)}
+                                            className="inline-flex items-center gap-1 text-red-750 hover:text-red-950 font-bold cursor-pointer transition-colors p-1.5 rounded-lg bg-red-50 hover:bg-red-100/80"
+                                            title="Delete RSVP / حذف الدعوة"
+                                          >
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                          </button>
                                         </td>
                                       </tr>
                                     );
@@ -721,8 +760,16 @@ export default function App() {
                                         " {item.wishText} "
                                       </div>
                                     </div>
-                                    <div className={`text-[9px] text-neutral-400 font-mono pt-2 border-t border-dashed border-champagne/40 ${hasArabic ? 'text-right' : ''}`}>
-                                      {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    <div className="flex justify-between items-center text-[9px] text-neutral-400 font-mono pt-2 border-t border-dashed border-champagne/40">
+                                      <span className={hasArabic ? 'text-right' : ''}>
+                                        {new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                      </span>
+                                      <button
+                                        onClick={() => handleDeleteWish(item.id, item.name)}
+                                        className="inline-flex items-center gap-1 text-red-700 hover:text-red-900 text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-colors p-1 px-2 rounded-lg bg-red-50 hover:bg-red-100"
+                                      >
+                                        <Trash2 className="h-3 w-3" /> Delete / حذف
+                                      </button>
                                     </div>
                                   </div>
                                 );
@@ -741,6 +788,7 @@ export default function App() {
                                     <th className="py-3.5 px-4 font-extrabold w-1/4">Name / الاسم</th>
                                     <th className="py-3.5 px-4 font-extrabold w-2/4">Wish / التهنئة</th>
                                     <th className="py-3.5 px-4 font-extrabold w-1/4">Timestamp / التاريخ</th>
+                                    <th className="py-3.5 px-4 font-extrabold text-right">Actions / إجراءات</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -759,6 +807,15 @@ export default function App() {
                                             hour: '2-digit',
                                             minute: '2-digit',
                                           })}
+                                        </td>
+                                        <td className="py-3.5 px-4 text-right">
+                                          <button
+                                            onClick={() => handleDeleteWish(item.id, item.name)}
+                                            className="inline-flex items-center gap-1 text-red-750 hover:text-red-950 font-bold cursor-pointer transition-colors p-1.5 rounded-lg bg-red-50 hover:bg-red-100/80"
+                                            title="Delete Wish / حذف التهنئة"
+                                          >
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                          </button>
                                         </td>
                                       </tr>
                                     );
