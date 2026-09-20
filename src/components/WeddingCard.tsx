@@ -12,7 +12,7 @@ interface WeddingCardProps {
 
 export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
   const [copied, setCopied] = useState(false);
-  const addressDetails = "Tanta - Al Mahallah Al Kubra Rd, Villa Salz Burg, El Mahalla El Kubra, Gharbia Governorate";
+  const addressDetails = "FAUGET HOTEL, Tanta - Al Mahallah Al Kubra Rd, Saft Torab, El Mahalla El Kubra, Gharbia Governorate";
 
   const handleCopyAddress = () => {
     navigator.clipboard.writeText(addressDetails);
@@ -155,38 +155,43 @@ export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
         <div className="relative px-2 pt-16 pb-8 flex flex-col items-center justify-center text-center z-20">
           
           {/* Header text */}
-          <span className="text-olive-medium font-cinzel text-xs md:text-sm tracking-[0.25em] font-medium uppercase mb-4">
-            Together with their families
-          </span>
+          <div className="flex flex-col items-center gap-1 mb-4">
+            <span className="text-olive-medium font-serif text-sm md:text-base font-bold tracking-wide">
+              بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
+            </span>
+            <span className="text-gold-dark font-sans text-xs md:text-sm font-semibold tracking-wider">
+              نتشرف بحضوركم حفل زفافنا
+            </span>
+          </div>
 
           {/* Names */}
-          <div className="flex flex-col items-center justify-center mb-4">
-            <h1 className="font-cursive text-olive-medium text-7xl md:text-8xl leading-none drop-shadow-xs italic">
+          <div className="flex flex-col items-center justify-center mb-3">
+            <h1 className="font-serif text-olive-medium text-6xl md:text-7xl font-bold tracking-wide leading-none drop-shadow-xs">
               Ahmed
             </h1>
-            <span className="font-serif text-3xl text-gold-dark my-2 inline-block italic font-normal">
-              &
+            <span className="font-serif text-3xl text-gold-dark my-1.5 inline-block italic font-normal">
+              و
             </span>
-            <h1 className="font-cursive text-olive-medium text-7xl md:text-8xl leading-none drop-shadow-xs italic">
+            <h1 className="font-serif text-olive-medium text-6xl md:text-7xl font-bold tracking-wide leading-none drop-shadow-xs">
               Yomna
             </h1>
           </div>
 
           {/* Invitation Call */}
-          <span className="text-olive-medium font-cinzel text-[11px] md:text-xs tracking-[0.2em] font-medium uppercase mb-6 leading-relaxed max-w-[280px]">
-            Invite you to join their wedding
+          <span className="text-olive-medium font-serif text-xs md:text-sm font-semibold mb-3 leading-relaxed">
+            وذلك بمشيئة الله
           </span>
 
           {/* Date Section precisely mirroring the photo structure */}
-          <div className="w-full max-w-[340px] flex flex-col items-center my-4 font-sans">
+          <div className="w-full max-w-[340px] flex flex-col items-center my-3 font-sans">
             <span className="text-gold-dark tracking-[0.25em] text-xs font-bold uppercase mb-1">
-              October
+              OCTOBER
             </span>
             <div className="flex items-center justify-center w-full">
               {/* Friday */}
               <div className="flex-1 text-right pr-4">
                 <span className="text-[#4e5d48] text-xs md:text-sm tracking-[0.14em] font-extrabold uppercase">
-                  Friday
+                  FRIDAY
                 </span>
               </div>
               
@@ -202,20 +207,25 @@ export default function WeddingCard({ onRSVPClick }: WeddingCardProps) {
                 </div>
               </div>
               
-              {/* At 8 PM */}
+              {/* At 9 PM */}
               <div className="flex-1 text-left pl-4">
                 <span className="text-[#4e5d48] text-xs md:text-sm tracking-[0.14em] font-extrabold uppercase whitespace-nowrap">
-                  At 8 PM
+                  AT 9 PM
                 </span>
               </div>
             </div>
           </div>
 
           {/* Location description */}
-          <div className="mt-6 mb-6 max-w-sm flex flex-col items-center">
-            <MapPin className="h-5 w-5 text-gold-dark mb-2 animate-bounce" />
+          <div className="mt-5 mb-5 max-w-sm flex flex-col items-center">
+            <span className="text-olive-medium font-serif text-sm font-extrabold tracking-wider mb-1">
+              FAUGET HOTEL
+            </span>
+            <div className="flex items-center justify-center gap-1.5 text-gold-dark mb-1">
+              <MapPin className="h-4 w-4 animate-bounce" />
+            </div>
             <p className="text-[#4e5d48] font-sans text-xs md:text-[13px] leading-relaxed font-bold px-2">
-              Tanta - Al Mahallah Al Kubra Rd, Villa Salz Burg, El Mahalla El Kubra, Gharbia Governorate
+              Tanta – Al Mahallah Al Kubra Rd, Saft Torab, El Mahalla El Kubra, Gharbia Governorate
             </p>
           </div>
 
