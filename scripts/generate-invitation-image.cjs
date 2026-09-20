@@ -130,17 +130,17 @@ const svgContent = `
   </text>
 
   <!-- Groom Name: Ahmed -->
-  <text x="600" y="555" text-anchor="middle" font-family="'Cinzel', 'Playfair Display', 'Didot', 'Times New Roman', serif" font-size="122" font-weight="700" fill="#2C343D" letter-spacing="4">
+  <text x="600" y="555" text-anchor="middle" font-family="'Montserrat', 'Century Gothic', 'Tw Cen MT', sans-serif" font-size="122" font-weight="600" fill="#2C343D" letter-spacing="2">
     Ahmed
   </text>
 
   <!-- Graceful ampersand / waw connector -->
-  <text x="600" y="665" text-anchor="middle" font-family="'Amiri', 'Alex Brush', 'Great Vibes', cursive, serif" font-size="58" font-weight="400" fill="#A88B67">
+  <text x="600" y="665" text-anchor="middle" font-family="'Amiri', 'Alex Brush', 'Great Vibes', cursive, serif" font-size="52" font-weight="400" fill="#A88B67">
     و
   </text>
 
   <!-- Bride Name: Yomna -->
-  <text x="600" y="805" text-anchor="middle" font-family="'Cinzel', 'Playfair Display', 'Didot', 'Times New Roman', serif" font-size="122" font-weight="700" fill="#2C343D" letter-spacing="4">
+  <text x="600" y="805" text-anchor="middle" font-family="'Montserrat', 'Century Gothic', 'Tw Cen MT', sans-serif" font-size="122" font-weight="600" fill="#2C343D" letter-spacing="2">
     Yomna
   </text>
 
@@ -180,14 +180,11 @@ const svgContent = `
   </text>
 
   <!-- Venue & Address Section -->
-  <text x="600" y="1305" text-anchor="middle" font-family="'Montserrat', 'Cinzel', sans-serif" font-size="30" font-weight="900" fill="#2C343D" letter-spacing="3.5">
-    FAUGET HOTEL
+  <text x="600" y="1310" text-anchor="middle" font-family="'Montserrat', 'Cinzel', sans-serif" font-size="34" font-weight="800" fill="#2C343D" letter-spacing="4">
+    VILLA SALZ BURG
   </text>
-  <text x="600" y="1358" text-anchor="middle" font-family="'Montserrat', 'Inter', sans-serif" font-size="24" font-weight="600" fill="#4B4238" letter-spacing="0.5">
-    Tanta – Al Mahallah Al Kubra Rd, Saft Torab, El
-  </text>
-  <text x="600" y="1400" text-anchor="middle" font-family="'Montserrat', 'Inter', sans-serif" font-size="24" font-weight="600" fill="#4B4238" letter-spacing="0.5">
-    Mahalla El Kubra, Gharbia Governorate
+  <text x="600" y="1368" text-anchor="middle" font-family="'Montserrat', 'Inter', sans-serif" font-size="24" font-weight="600" fill="#4B4238" letter-spacing="0.5">
+    Tanta – Al Mahallah Al Kubra  Gharbia Governorate
   </text>
 
   <!-- Bottom decorative subtle flourish -->
@@ -243,7 +240,7 @@ async function main() {
       دعوة لحضور حفل زفاف
     </text>
     
-    <text x="600" y="290" text-anchor="middle" font-family="'Cinzel', 'Playfair Display', serif" font-size="78" font-weight="700" fill="#2C343D" letter-spacing="3">
+    <text x="600" y="290" text-anchor="middle" font-family="'Montserrat', 'Century Gothic', sans-serif" font-size="78" font-weight="700" fill="#2C343D" letter-spacing="3">
       Ahmed  &amp;  Yomna
     </text>
 
@@ -252,11 +249,11 @@ async function main() {
       FRIDAY  •  16 OCTOBER 2026  •  AT 9 PM
     </text>
 
-    <text x="600" y="440" text-anchor="middle" font-family="'Montserrat', 'Cinzel', sans-serif" font-size="22" font-weight="800" fill="#2C343D">
-      FAUGET HOTEL
+    <text x="600" y="440" text-anchor="middle" font-family="'Montserrat', 'Cinzel', sans-serif" font-size="24" font-weight="800" fill="#2C343D" letter-spacing="3">
+      VILLA SALZ BURG
     </text>
-    <text x="600" y="480" text-anchor="middle" font-family="'Montserrat', 'Inter', sans-serif" font-size="18" font-weight="500" fill="#5E5346">
-      Tanta – Al Mahallah Al Kubra Rd, Saft Torab, Gharbia
+    <text x="600" y="480" text-anchor="middle" font-family="'Montserrat', 'Inter', sans-serif" font-size="18" font-weight="600" fill="#5E5346">
+      Tanta – Al Mahallah Al Kubra  Gharbia Governorate
     </text>
 
     <!-- Tap to view callout badge -->
@@ -304,13 +301,13 @@ async function main() {
     </text>
 
     <!-- Couple Names -->
-    <text x="300" y="225" text-anchor="middle" font-family="'Cinzel', serif" font-size="52" font-weight="700" fill="#2C343D" letter-spacing="2">
+    <text x="300" y="225" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="52" font-weight="700" fill="#2C343D" letter-spacing="2">
       Ahmed
     </text>
     <text x="300" y="270" text-anchor="middle" font-family="'Amiri', cursive" font-size="30" fill="#A88B67">
       و
     </text>
-    <text x="300" y="330" text-anchor="middle" font-family="'Cinzel', serif" font-size="52" font-weight="700" fill="#2C343D" letter-spacing="2">
+    <text x="300" y="330" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="52" font-weight="700" fill="#2C343D" letter-spacing="2">
       Yomna
     </text>
 
@@ -326,11 +323,11 @@ async function main() {
     </text>
 
     <!-- Venue -->
-    <text x="300" y="495" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="16" font-weight="800" fill="#2C343D">
-      FAUGET HOTEL
+    <text x="300" y="495" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="18" font-weight="800" fill="#2C343D" letter-spacing="1">
+      VILLA SALZ BURG
     </text>
-    <text x="300" y="520" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" font-weight="500" fill="#5E5346">
-      Tanta – El Mahalla El Kubra
+    <text x="300" y="522" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" font-weight="600" fill="#5E5346">
+      Tanta – Al Mahallah Al Kubra
     </text>
   </svg>
   `;
