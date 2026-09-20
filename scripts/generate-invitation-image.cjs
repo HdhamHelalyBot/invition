@@ -268,12 +268,76 @@ async function main() {
   `;
 
   await sharp(Buffer.from(bannerSvg))
-    .jpeg({ quality: 90, mozjpeg: true })
+    .jpeg({ quality: 88, mozjpeg: true })
     .toFile(path.join(publicDir, 'og-image.jpg'));
 
   await sharp(Buffer.from(bannerSvg))
-    .png({ quality: 92 })
+    .png({ quality: 90 })
     .toFile(path.join(publicDir, 'og-image.png'));
+
+  // 4. Square 600x600 thumbnail (especially for WhatsApp mobile contact cards)
+  console.log('Generating wedding-thumb.jpg (600x600 square) ...');
+  const squareSvg = `
+  <svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sqBg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FCFAF6" />
+        <stop offset="100%" stop-color="#F2ECE1" />
+      </linearGradient>
+    </defs>
+    <rect width="600" height="600" fill="url(#sqBg)" />
+
+    <!-- Corner Pampas plumes -->
+    ${generatePampasFronds(50, 610, 0.45, -30)}
+    ${generatePampasFronds(550, -10, 0.45, 140)}
+
+    <!-- Frame -->
+    <rect x="25" y="25" width="550" height="550" rx="8" fill="none" stroke="#C5A880" stroke-width="1.5" opacity="0.8" />
+    <path d="M 45 540 L 45 220 A 255 255 0 0 1 555 220 L 555 540" fill="none" stroke="#C5A880" stroke-width="1.2" opacity="0.75" />
+
+    <!-- Calligraphy -->
+    <text x="300" y="110" text-anchor="middle" font-family="'Amiri', serif" font-size="20" font-weight="bold" fill="#2E2822">
+      بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
+    </text>
+    <text x="300" y="145" text-anchor="middle" font-family="'Cairo', sans-serif" font-size="14" font-weight="600" fill="#7D7060">
+      دعوة لحضور حفل زفاف
+    </text>
+
+    <!-- Couple Names -->
+    <text x="300" y="225" text-anchor="middle" font-family="'Cinzel', serif" font-size="52" font-weight="700" fill="#2C343D" letter-spacing="2">
+      Ahmed
+    </text>
+    <text x="300" y="270" text-anchor="middle" font-family="'Amiri', cursive" font-size="30" fill="#A88B67">
+      و
+    </text>
+    <text x="300" y="330" text-anchor="middle" font-family="'Cinzel', serif" font-size="52" font-weight="700" fill="#2C343D" letter-spacing="2">
+      Yomna
+    </text>
+
+    <!-- Date block -->
+    <text x="300" y="380" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="14" font-weight="800" fill="#2C343D" letter-spacing="3">
+      OCTOBER
+    </text>
+    <text x="300" y="420" text-anchor="middle" font-family="'Cinzel', serif" font-size="36" font-weight="800" fill="#2C343D">
+      16
+    </text>
+    <text x="300" y="448" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="15" font-weight="700" fill="#4B4238" letter-spacing="2">
+      FRIDAY  •  AT 9 PM  •  2026
+    </text>
+
+    <!-- Venue -->
+    <text x="300" y="495" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="16" font-weight="800" fill="#2C343D">
+      FAUGET HOTEL
+    </text>
+    <text x="300" y="520" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" font-weight="500" fill="#5E5346">
+      Tanta – El Mahalla El Kubra
+    </text>
+  </svg>
+  `;
+
+  await sharp(Buffer.from(squareSvg))
+    .jpeg({ quality: 88, mozjpeg: true })
+    .toFile(path.join(publicDir, 'wedding-thumb.jpg'));
 
   console.log('All invitation preview assets generated successfully!');
 }
